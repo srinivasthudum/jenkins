@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    VERDACCIO_REGISTRY = 'http://<your-ec2-ip>:4873'
+    VERDACCIO_REGISTRY = 'http://13.204.43.247:8080/'
   }
 
   stages {
