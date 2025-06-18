@@ -1,0 +1,38 @@
+pipeline {
+  agent any
+
+  environment {
+    VERDACCIO_REGISTRY = 'http://13.204.43.247:8080/'
+  }
+
+  stages {
+    stage('Checkout Code') {
+      steps {
+        git 'https://github.com/srinivasthudum/jenkins.git'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install'
+      }
+    }
+
+    stage('Configure .npmrc for Verdaccio') {
+      steps {
+        withCredentials([string(credentialsId: 'VERDACCIO_AUTH_TOKEN', variable: 'NPM_TOKEN')]) {
+          sh """
+            echo "@local:registry=${VERDACCIO_REGISTRY}" > ~/.npmrc
+            echo "//${VERDACCIO_REGISTRY#http://}/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+          """
+        }
+      }
+    }
+
+    stage('Publish to Verdaccio') {
+      steps {
+        sh 'npm publish --registry $VERDACCIO_REGISTRY'
+      }
+    }
+  }
+}
