@@ -12,9 +12,15 @@ pipeline {
             }
         }
 
-        stage('Bump Version') {
+        stage('Set Unique Version') {
             steps {
-                sh 'npm version patch --no-git-tag-version'
+                script {
+                    def newVersion = "1.0.${env.BUILD_NUMBER}"
+                    sh """
+                        jq '.version = "${newVersion}"' package.json > tmp.json && mv tmp.json package.json
+                        cat package.json
+                    """
+                }
             }
         }
 
