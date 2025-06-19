@@ -12,6 +12,12 @@ pipeline {
             }
         }
 
+        stage('Bump Version') {
+            steps {
+                sh 'npm version patch --no-git-tag-version'
+            }
+        }
+
         stage('Pack the Module') {
             steps {
                 sh 'npm pack'
